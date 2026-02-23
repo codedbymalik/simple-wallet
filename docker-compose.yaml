@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: bank_api_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: bank_db
+      MYSQL_USER: bank_user
+      MYSQL_PASSWORD: bank_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - bank_network
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bank_api_php
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: bank_user
+      DB_PASSWORD: bank_password
+      DB_NAME: bank_db
+    networks:
+      - bank_network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: bank_api_phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: bank_user
+      PMA_PASSWORD: bank_password
+    depends_on:
+      - db
+    networks:
+      - bank_network
+
+volumes:
+  db_data:
+
+networks:
+  bank_network:
+    driver: bridge

@@ -1,0 +1,17 @@
+{
+    "name": "simple-wallet/bank-api",
+    "description": "Bank Transaction REST API",
+    "require": {
+        "php": ">=8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Core\\": "src/Core/",
+            "Controllers\\": "src/Controllers/",
+            "Models\\": "src/Models/",
+            "Services\\": "src/Services/",
+            "Interfaces\\": "src/Interfaces/",
+            "Config\\": "src/Config/"
+        }
+    }
+}
